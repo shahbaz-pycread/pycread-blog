@@ -1,0 +1,61 @@
+{% extends 'blogapp/base.html' %}
+{% load static %}
+{% block title %} Blogs {% endblock title %}
+{% block content %}
+    <div class="container mt-4">
+        
+        <h4 class="display-3">My Profile | {{ page_user.user.first_name }} {{ page_user.user.last_name }}</h4>
+
+        <div class="card mb-3" >
+            <div class="row g-0">
+              <div class="col-md-3 px-3 py-4">
+                {% if page_user.profile_pic  %}
+                    <img class="img-fluid rounded-circle" src="{{ page_user.profile_pic.url }}" style="height: 200px; width:200px">
+                {% else %} 
+                    <img class="img-fluid rounded-circle" style="height: 200px; width:200px" src = "{% static 'blogapp/images/default.jpeg' %}">
+                {% endif %}
+              </div>
+              <div class="col-md-9">
+                <div class="card-body">
+                    {% comment %} <h5 class="card-title">{{ page_user.user.first_name }} {{ page_user.user.last_name }}</h5> {% endcomment %}
+                    <p class="card-text fs-2">Connect with me</p>
+                    <p class="small text-muted px-3">
+                        {% if page_user.website_url %}
+                            <a href="{{ page_user.website_url }}" class="px-1 fs-4">
+                                <i class="bi bi-globe2"></i> 
+                            </a>
+                        {% endif %}
+                        {% if page_user.linkedin_url %}
+                            <a href="{{ page_user.linkedin_url }}" class="px-2 fs-4">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
+                        {% endif %}
+                        {% if page_user.twitter_url %}
+                            <a href="{{ page_user.twitter_url }}" class="px-2 fs-4">
+                                <i class="bi bi-twitter-x"></i>
+                            </a>
+                        {% endif %}
+                        {% if page_user.instagram_url %}
+                            <a href="{{ page_user.instagram_url }}" class="px-2 fs-4"> 
+                                <i class="bi bi-instagram"></i> 
+                            </a>
+                        {% endif %}
+                        {% if page_user.facebook_url %} 
+                            <a href="{{ page_user.facebook_url }}" class="px-2 fs-4">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                        {% endif %}
+                    </p>
+                    <hr>
+                  <p class="card-text">{{ page_user.bio }}</p>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+       
+        
+    </div>
+    <a href="{% url 'home' %}" class="btn btn-info mx-2">Go to Homepage</a>
+{% endblock content %}
+    

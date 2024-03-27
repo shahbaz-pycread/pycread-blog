@@ -1,0 +1,37 @@
+{% extends 'blogapp/base.html' %}
+{% block title %} Blogs {% endblock title %}
+{% block content %}
+    <div class="container mt-4">
+        {% if category_posts %}
+            <h4 class="display-3">{{ cats|title }} </h4>
+            <p class="text-secondary fs-3 ">Total Posts: {{ total_posts }}</p>
+            <ul>
+                {% for post in category_posts %}
+                    <li class="pt-2">
+                        <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a> - 
+                        <small>posted on {{ post.date_posted | date }}</small>
+                        by {{ post.author.first_name }} {{ post.author.last_name }}
+                        {% if user.is_authenticated %}
+                        
+                        <p>{{ post.content | slice:":50"|safe }}</p>
+                        <small>
+                            {% if user.id == post.author.id %}
+                                <a href="{% url "update_post" post.pk %}">
+                                    (Edit)
+                                </a>
+                                <a class="text-danger" href="{% url "delete_post" post.pk %}">
+                                    (Delete)
+
+                                </a>
+                            {% endif %}
+                        </small>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class='text-danger text-center'>Sorry, No Posts found with this category.</p>
+        {% endif %}
+    </div>
+{% endblock content %}
+    

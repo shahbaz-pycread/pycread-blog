@@ -1,0 +1,108 @@
+{% extends 'blogapp/base.html' %}
+{% load static %}
+{% block title %} {{ post.title }} {% endblock title %}
+{% block content %}
+        <div class="container mt-4">
+            
+            <h3 class="diplay-2">{{ post.title }}</h3> - <small>{{ post.author.first_name }} {{ post.author.last_name }}
+                {% if user.is_authenticated %}
+                {% comment %} checking if the current user is same as author {% endcomment %}
+                    {% if user.id == post.author.id %}
+                        <a href="{% url "update_post" post.pk %}">
+                            (Edit)
+                        </a>
+                        <a class="text-danger" href="{% url "delete_post" post.pk %}">(Delete)</a>
+                    {% endif %}
+                {% endif %}
+            </small>
+            <hr>
+            {% if post.header_image %}
+                <img src="{{ post.header_image.url }}">
+            {% endif %}
+            <p>{{ post.content|safe }}</p>
+            <p> - {{ post.date_posted }}</p>
+            <hr>
+            <form action="{% url 'like_post' post.pk %}" method="POST">
+                {% csrf_token %}
+                {% if user.is_authenticated %}
+                    {% if liked %}
+                        <button type="submit" name="post_id" class="btn btn-danger btn-sm" value="{{ post.id }}">Unlike</button>
+                    {% else %}    
+                        <button type="submit" name="post_id" class="btn btn-primary btn-sm" value="{{ post.id }}">Like</button>
+                    {% endif %}
+                {% else %}
+                <p class="text-danger fs-5"><a class="text-info" style="text-decoration: none;" href="{% url "login" %}">Login</a> in to like the post.</p>
+                {% endif %}
+            </form>
+                <button type="button" class="btn btn-info mb-2 mt-2 text-white">{{ total_likes }} likes</button> 
+            
+            <!-- <img class="rounded-circle" src="{{ user.profile.profile_pic.url }}" style="height: 200px; width:200px"> -->
+            <div class="card mb-2" style="width: 700px;">
+                <div class="row g-0">
+                  <div class="col-md-5 px-3 py-4">
+                    {% if post.author.profile.profile_pic  %}
+                        <img class="img-fluid rounded-circle" src="{{ post.author.profile.profile_pic.url }}" style="height: 100px; width:100px">
+                    {% else %} 
+                        <img class="img-fluid rounded-circle" style="height: 200px; width:200px" src = "{% static 'blogapp/images/default.jpeg' %}">
+                    {% endif %}
+                  </div>
+                  <div class="col-md-7">
+                    <div class="card-body px-5">
+                        <h5 class="card-title fs-3">{{ post.author.first_name }} {{ post.author.last_name }} </h5>
+                        {% if post.author.profile.website_url or post.author.profile.linkedin_url or post.author.profile.twitter_url or post.author.profile.instagram_url or post.author.profile.facebook_url %}
+                            <p class="text-muted fs-5">Connect with me</p>
+                                <p class="small text-muted px-3">
+                                    {% if post.author.profile.website_url %}
+                                        <a href="{{ post.author.profile.website_url }}" class="px-1">
+                                            <i class="bi bi-globe2"></i> 
+                                        </a>
+                                    {% endif %}
+                                    {% if post.author.profile.linkedin_url %}
+                                        <a href="{{ post.author.profile.linkedin_url }}" class="px-2">
+                                            <i class="bi bi-linkedin"></i>
+                                        </a>
+                                    {% endif %}
+                                    {% if post.author.profile.twitter_url %}
+                                        <a href="{{ post.author.profile.twitter_url }}" class="px-2">
+                                            <i class="bi bi-twitter-x"></i>
+                                        </a>
+                                    {% endif %}
+                                    {% if post.author.profile.instagram_url %}
+                                        <a href="{{ post.author.profile.instagram_url }}" class="px-2"> 
+                                            <i class="bi bi-instagram"></i> 
+                                        </a>
+                                    {% endif %}
+                                    {% if post.author.profile.facebook_url %} 
+                                        <a href="{{ post.author.profile.facebook_url }}" class="px-2">
+                                            <i class="bi bi-facebook"></i>
+                                        </a>
+                                    {% endif %}
+                                </p>
+                        {% endif %}        
+                      <a class="btn btn-info" href="{% url 'show_profile_page' post.author.profile.id %}">Read Bio</a>
+                    </div>
+                  </div>
+                  
+                </div>
+            </div>
+            <p>Comments...</p>
+                    {% if not post.comments.all %}
+                        <p class="text-dark">No Comments yet... <a class="text-info" href="{% url 'add_comment' post.pk %}" style="text-decoration: none;">Start a conversation..</a></p>
+                    {% else %}
+                    <a href="{% url 'add_comment' post.pk %}">Add Comment</a> <br>
+                        {% for comment in post.comments.all %}
+                            <strong>
+                                {{ comment.name }} 
+                                <small class="text-muted">Commented on</small> {{ comment.date_added }}
+                            </strong>
+                            <br>
+                                {{ comment.body }}
+                                <br><br>
+                        {% endfor %}
+                    {% endif %}
+                    <hr>
+            <a href="{% url 'home' %}" class="btn btn-info">Go to Homepage</a>
+        </div>
+
+    
+{% endblock content %}

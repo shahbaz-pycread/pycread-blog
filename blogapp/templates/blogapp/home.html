@@ -1,0 +1,42 @@
+{% extends 'blogapp/base.html' %}
+{% block title %} Blogs {% endblock title %}
+{% block content %}
+    <div class="container mt-4">
+        
+        <h4 class="display-3">Posts</h4>
+        <p class="text-secondary fs-3 ">Total Posts: {{ total_posts }}</p>
+        <hr>
+        <ul> 
+            {% for post in object_list %}
+            {% comment %} <li class="pt-2"> {% endcomment %}
+                
+                <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a> - <a href="{% url "category" post.category|slugify %}">{{ post.category }}</a>
+                <small>posted on {{ post.date_posted | date }}</small>
+                by <a href="{% url 'show_profile_page' post.author.profile.id %}">  {{ post.author.first_name }} {{ post.author.last_name }} </a>
+                {% if user.is_authenticated %}
+                    
+                <p> {{ post.snippet }} </p>
+                
+                    {% if user.id == post.author.id %}
+                        <small>
+
+                            <a href="{% url "update_post" post.pk %}">
+                                (Edit)
+                            </a>
+                            <a class="text-danger" href="{% url "delete_post" post.pk %}">(Delete)
+
+                            </a>
+                            
+                        </small>
+                    {% endif %}
+                {% endif %}
+                 
+            {% comment %} </li> {% endcomment %}
+            <hr>
+            {% endfor %}
+            
+        </ul>
+        
+    </div>
+{% endblock content %}
+    

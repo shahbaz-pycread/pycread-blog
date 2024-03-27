@@ -1,0 +1,92 @@
+<nav class="navbar navbar-expand-lg bg-dark text-white">
+    <div class="container-fluid">
+      <a class="navbar-brand text-white" href="{% url "home" %}">PyCread</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+          {% comment %} Category Menu Code {% endcomment %}
+          {% if cat_menu %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Categories
+              </a>
+              
+              <ul class="dropdown-menu">
+                {% for item in cat_menu %}
+                <li><a class="dropdown-item" href="{% url "category" item|slugify %}">{{ item }}</a></li>
+                {% endfor %}
+                
+              </ul>
+            </li>
+            {% else %}
+              <li class="nav-item no-decoration">
+                <a class="nav-link text-white" href="{% url "category-list" %}">Categories</a>
+              </li>
+          {% endif %}
+
+         {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link text-white" href="{% url "add_post" %}">Add Post</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link text-white" href="{% url "add_category" %}">Add Category</a>
+            </li>
+            <li class="nav-item">
+              <form  method='post' action="{% url 'logout' %}" class="d-flex">
+              {% csrf_token %}
+                <!-- <a class="btn btn-info text-white" style="text-decoration: none;">Logout</a> -->
+                <button class="btn btn-link text-white" style="text-decoration: none;" type="submit">Logout</button>
+
+              </form>
+            </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{% url "register" %}">Register</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{% url "login" %}">Login</a>
+          </li>
+        {% endif %}
+        </ul>
+        {% if user.is_authenticated %}
+          
+            <ul class="navbar-nav ms-5 mb-2 mb-lg-0 ">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  {{ user.first_name }} {{ user.last_name }}
+                </a>
+                <ul class="dropdown-menu ">
+                  <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Edit Settings</a></li>
+                  {% if user.profile.id %}
+                    <li><a class="dropdown-item" href="{% url 'edit_profile_page' user.profile.id %}">Edit Profile Page</a></li>
+                    <li><a class="dropdown-item" href="{% url 'show_profile_page' user.profile.id %}">Show Profile Page</a></li>
+                  {% else %}
+                  <li><a class="dropdown-item" href="{% url 'create_profile_page' %}">Create Profile Page</a></li>
+                  {% endif %}
+                  <li class="nav-item">
+                    <form  method='post' action="{% url 'logout' %}" class="d-flex">
+                      {% csrf_token %}
+                      <!-- <a class="btn btn-info text-white" style="text-decoration: none;">Logout</a> -->
+                      <button class="btn btn-link" style="text-decoration: none;" type="submit">Logout</button>
+      
+                    </form>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          
+        {% endif %}
+        <!-- <form  method='post' action="{% url 'logout' %}" class="d-flex px-5">
+          {% csrf_token %}
+          <a class="text-white" style="text-decoration: none;">Logout</a>
+          {% comment %} <a class="nav-link text-white" href="javascript:$('#frm_logout').submit();">Logout</a> {% endcomment %}
+        </form> -->
+       
+        
+      </div>
+    </div>
+  </nav>

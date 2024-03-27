@@ -1,0 +1,26 @@
+{% extends 'blogapp/base.html' %}
+{% block title %} Edit Post {% endblock title %}
+{% block content %}
+    <div class="container mt-2">
+        {% if user.is_authenticated %}
+        {% comment %} checking if the current user is same as author {% endcomment %}
+            {% if user.id == post.author.id %}
+                <h4 class="display-4 mb-3 text-center">Update Post</h4>
+                <hr>
+                <div class="mt-3 mx-auto" style="width: 500px; height: 500px">
+                    <form  method='POST'>
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button class='btn btn-info'>Update</button>
+                    </form>
+                </div>
+            {% else %}
+            <p class="text-danger text-center">You are not authorized to access this page.</p>
+        
+            {% endif %}
+        {% else %}
+        <p class="text-danger text-center">You are not logged in.</p>
+        <p class="text-info text-center">Click <a href="{% url 'login' %}">Here</a> to login.</p>
+        {% endif %}
+    </div>
+{% endblock content %}
